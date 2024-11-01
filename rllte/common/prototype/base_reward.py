@@ -27,7 +27,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Tuple, Optional
 from gymnasium.vector import VectorEnv
 
-import gymnasium as gym
+import gym
 import numpy as np
 import torch as th
 
