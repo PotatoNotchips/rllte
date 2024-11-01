@@ -28,7 +28,7 @@ from typing import Dict, Tuple, Union
 import gymnasium as gym
 import numpy as np
 import torch as th
-from gymnasium import spaces
+from gymn import spaces
 from torch.nn import functional as F
 
 ObsShape = Union[Tuple[int, ...], Dict[str, Tuple[int, ...]]]
