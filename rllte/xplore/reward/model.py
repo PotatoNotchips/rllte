@@ -107,7 +107,7 @@ class ObservationEncoder(nn.Module):
             print("We are in custom mode!")
             # Define a simple multilayer neural network
             self.trunk = nn.Sequential(
-                init_(nn.Linear(obs_shape[0] * obs_shape[1], 2048)), 
+                init_(nn.Linear(obs_shape[1], 2048)), 
                 nn.ReLU(),
                 init_(nn.Linear(2048, 1024)),
                 nn.ReLU(),
