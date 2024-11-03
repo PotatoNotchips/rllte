@@ -126,6 +126,10 @@ class RND(BaseReward):
             # get source and target features
             src_feats = self.predictor(next_obs_tensor.view(-1, *self.obs_shape))
             tgt_feats = self.target(next_obs_tensor.view(-1, *self.obs_shape))
+            print("This is the src feats: ", src_feats)
+            print("This is the tgt feats: ", tgt_feats)
+            print("This is the src feats shape: ", src_feats.shape)
+            print("This is the tgt feats shape: ", tgt_feats.shape)
             # compute the distance
             dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
             print("This is the n_steps needed for getting the int reward: ", n_steps)
