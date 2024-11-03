@@ -134,6 +134,8 @@ class ObservationEncoder(nn.Module):
             Encoding tensors.
         """
         # normalization for intrinsic rewards is dealt with in the base intrinsic reward class
+        print("This is the obs shape in the trunk function: ", obs.shape)
+        print("This is the obs in the trunck function: ", obs)
         return self.trunk(obs)
     
 class InverseDynamicsEncoder(nn.Module):
