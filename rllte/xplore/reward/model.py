@@ -67,7 +67,7 @@ class ObservationEncoder(nn.Module):
 
         # visual
         if encoder_model == "mnih" and len(obs_shape) > 2:
-            Print("We are in mnih mode!")
+            print("We are in mnih mode!")
             self.trunk = nn.Sequential(
                 init_(nn.Conv2d(obs_shape[0], 32, 8, stride=4)),
                 nn.ReLU(),
@@ -80,7 +80,7 @@ class ObservationEncoder(nn.Module):
 
             with th.no_grad():
                 sample = th.ones(size=tuple(obs_shape)).float()
-                n_flatten = self.trunk(sample.unsqueeze(0)).view(1, -1).shape[1]
+                n_flatten = self.trunk(sample.unsqueeze(0)).shape[1]
 
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
@@ -99,16 +99,33 @@ class ObservationEncoder(nn.Module):
             )
             with th.no_grad():
                 sample = th.ones(size=tuple(obs_shape)).float()
-                n_flatten = self.trunk(sample.unsqueeze(0)).view(1, -1).shape[1]
+                n_flatten = self.trunk(sample.unsqueeze(0)).shape[1]
 
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
-        else:
-            print("We are in else mode!")
-            self.trunk = nn.Sequential(
+        elif encoder_model == "custom":
+            print("We are in custom mode!")
+            
+           ''' self.trunk = nn.Sequential(
                 init_(nn.Linear(obs_shape[0], 256)), 
                 nn.ReLU()
+            )'''
+            # Define a simple multilayer neural network
+            self.trunk = nn.Sequential(
+                init_(nn.Linear(obs_shape[0], 2048)), 
+                nn.ReLU(),
+                init_(nn.Linear(2048, 1024)),
+                nn.ReLU(),
+                init_(nn.Linear(1024, 512)),
+                nn.ReLU()
             )
+            self.trunk.append(init_(nn.Linear(512, latent_dim)))
+            self.trunk.append(nn.ReLu())
+        else:
+            self.trunk = nn.Sequential(
+                        init_(nn.Linear(obs_shape[0], 256)), 
+                        nn.ReLU()
+
             self.trunk.append(init_(nn.Linear(256, latent_dim)))
 
     def forward(self, obs: th.Tensor) -> th.Tensor:
