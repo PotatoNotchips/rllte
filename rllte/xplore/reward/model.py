@@ -120,7 +120,8 @@ class ObservationEncoder(nn.Module):
             self.trunk = nn.Sequential(
                         init_(nn.Linear(obs_shape[0], 256)), 
                         nn.ReLU()
-
+            )
+            
             self.trunk.append(init_(nn.Linear(256, latent_dim)))
 
     def forward(self, obs: th.Tensor) -> th.Tensor:
