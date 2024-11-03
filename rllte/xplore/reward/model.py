@@ -67,6 +67,7 @@ class ObservationEncoder(nn.Module):
 
         # visual
         if encoder_model == "mnih" and len(obs_shape) > 2:
+            Print("We are in mnih mode!")
             self.trunk = nn.Sequential(
                 init_(nn.Conv2d(obs_shape[0], 32, 8, stride=4)),
                 nn.ReLU(),
@@ -79,11 +80,12 @@ class ObservationEncoder(nn.Module):
 
             with th.no_grad():
                 sample = th.ones(size=tuple(obs_shape)).float()
-                n_flatten = self.trunk(sample.unsqueeze(0)).shape[1]
+                n_flatten = self.trunk(sample.unsqueeze(0)).view(1, -1).shape[1]
 
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
         elif encoder_model == "espeholt" and len(obs_shape) > 2:
+            print("We are in espeholt mode!")
             self.trunk = nn.Sequential(
                 init_(nn.Conv2d(obs_shape[0], 32, kernel_size=3, stride=2, padding=1)),
                 nn.ELU(),
@@ -97,11 +99,12 @@ class ObservationEncoder(nn.Module):
             )
             with th.no_grad():
                 sample = th.ones(size=tuple(obs_shape)).float()
-                n_flatten = self.trunk(sample.unsqueeze(0)).shape[1]
+                n_flatten = self.trunk(sample.unsqueeze(0)).view(1, -1).shape[1]
 
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
         else:
+            print("We are in else mode!")
             self.trunk = nn.Sequential(
                 init_(nn.Linear(obs_shape[0], 256)), 
                 nn.ReLU()
