@@ -132,6 +132,11 @@ class RND(BaseReward):
             print("This is the tgt feats shape: ", tgt_feats.shape)
             # compute the distance
             dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
+            print("This is  the dist b4 calculated from the mse loss: ", dist)
+            print("This is  the dist b4 shape from the mse loss: ", dist.shape)
+            dist = th.mean(dist, dim=0)
+            print("This is  the dist calculated from the mse loss: ", dist)
+            print("This is  the dist shape from the mse loss: ", dist.shape)
             print("This is the n_steps needed for getting the int reward: ", n_steps)
             print("This is the n_envs needed for getting the int reward: ", n_envs)
             print("This is  the dist calculated from the mse loss: ", dist)
