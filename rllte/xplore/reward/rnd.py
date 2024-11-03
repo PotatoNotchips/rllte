@@ -194,7 +194,6 @@ class RND(BaseReward):
             print("Loss shape at dim 0:", loss.shape[0])
             print("Loss shape at dim 1:", loss.shape[1])
             print("Mask shape at dim 0:", mask.shape[0])
-            print("Mask shape at dim 1:", mask.shape[1])
             loss = (loss * mask).sum() / th.max(
                 mask.sum(), th.tensor([1], device=self.device, dtype=th.float32)
             )
