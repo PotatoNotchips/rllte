@@ -128,6 +128,12 @@ class RND(BaseReward):
             tgt_feats = self.target(next_obs_tensor.view(-1, *self.obs_shape))
             # compute the distance
             dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
+            print("This is the n_steps needed for getting the int reward: ", n_steps)
+            print("This is the n_envs needed for getting the int reward: ", n_envs)
+            print("This is  the dist calculated from the mse loss: ", dist)
+            print("This is  the dist shape from the mse loss: ", dist.shape)
+            print("This is the n_steps shape for getting the int reward: ", n_steps.shape)
+            print("This is the n_envs shape for getting the int reward: ", n_envs.shape)
             intrinsic_rewards = dist.view(n_steps, n_envs)
 
         # update the reward module
