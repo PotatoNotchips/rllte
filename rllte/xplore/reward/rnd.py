@@ -120,6 +120,8 @@ class RND(BaseReward):
         next_obs_tensor = self.normalize(next_obs_tensor)
         # compute the intrinsic rewards
         intrinsic_rewards = th.zeros(size=(n_steps, n_envs)).to(self.device)
+        print("This is the next_obs_tensor used in the predictor and target model: ", next_obs_tensor)
+        print("This is the obs shape used in the predictor and target model: ", self.obs_shape)
         with th.no_grad():
             # get source and target features
             src_feats = self.predictor(next_obs_tensor.view(-1, *self.obs_shape))
