@@ -107,7 +107,7 @@ class ObservationEncoder(nn.Module):
             print("We are in custom mode!")
             # Define a simple multilayer neural network
             self.trunk = nn.Sequential(
-                init_(nn.Linear(obs_shape[0], 2048)), 
+                init_(nn.Linear(obs_shape[0] * obs_shape[1], 2048)), 
                 nn.ReLU(),
                 init_(nn.Linear(2048, 1024)),
                 nn.ReLU(),
@@ -135,6 +135,9 @@ class ObservationEncoder(nn.Module):
         """
         # normalization for intrinsic rewards is dealt with in the base intrinsic reward class
         print("This is the obs shape in the trunk function: ", obs.shape)
+        print("This is the obs shape [0] in the trunk function: ", obs.shape[0])
+        print("This is the obs shape [1] in the trunk function: ", obs.shape[1])
+        print("This is the obs shape [2] in the trunk function: ", obs.shape[2])
         print("This is the obs in the trunck function: ", obs)
         return self.trunk(obs)
     
