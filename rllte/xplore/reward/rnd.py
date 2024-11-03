@@ -181,6 +181,7 @@ class RND(BaseReward):
 
             # compute the loss
             loss = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=-1)
+            loss = th.mean(loss, dim=1, keepdim=True)
             # use a random mask to select a subset of the training data
             mask = th.rand(len(loss), device=self.device)
             mask = (mask < self.update_proportion).type(th.FloatTensor).to(self.device)
