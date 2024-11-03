@@ -185,6 +185,14 @@ class RND(BaseReward):
             mask = th.rand(len(loss), device=self.device)
             mask = (mask < self.update_proportion).type(th.FloatTensor).to(self.device)
             # get the masked loss
+            # Before the line causing the error, add these print statements to check tensor shapes
+            print("Shapes before multiplication - Loss shape:", loss.shape, "Mask shape:", mask.shape)
+            
+            # Verify the specific dimension causing the issue
+            print("Loss shape at dim 0:", loss.shape[0])
+            print("Loss shape at dim 1:", loss.shape[1])
+            print("Mask shape at dim 0:", mask.shape[0])
+            print("Mask shape at dim 1:", mask.shape[1])
             loss = (loss * mask).sum() / th.max(
                 mask.sum(), th.tensor([1], device=self.device, dtype=th.float32)
             )
