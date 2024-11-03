@@ -187,7 +187,8 @@ class RND(BaseReward):
             # get the masked loss
             # Before the line causing the error, add these print statements to check tensor shapes
             print("Shapes before multiplication - Loss shape:", loss.shape, "Mask shape:", mask.shape)
-            
+            print("This is the loss b4 the error function: ", loss)
+            print("This is the mask b4 the error function: ", mask)
             # Verify the specific dimension causing the issue
             print("Loss shape at dim 0:", loss.shape[0])
             print("Loss shape at dim 1:", loss.shape[1])
