@@ -120,25 +120,13 @@ class RND(BaseReward):
         next_obs_tensor = self.normalize(next_obs_tensor)
         # compute the intrinsic rewards
         intrinsic_rewards = th.zeros(size=(n_steps, n_envs)).to(self.device)
-        print("This is the next_obs_tensor used in the predictor and target model: ", next_obs_tensor)
-        print("This is the obs shape used in the predictor and target model: ", self.obs_shape)
         with th.no_grad():
             # get source and target features
             src_feats = self.predictor(next_obs_tensor.view(-1, *self.obs_shape))
             tgt_feats = self.target(next_obs_tensor.view(-1, *self.obs_shape))
-            print("This is the src feats: ", src_feats)
-            print("This is the tgt feats: ", tgt_feats)
-            print("This is the src feats shape: ", src_feats.shape)
-            print("This is the tgt feats shape: ", tgt_feats.shape)
             # compute the distance
             dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
-            print("This is  the dist b4 calculated from the mse loss: ", dist)
-            print("This is  the dist b4 shape from the mse loss: ", dist.shape)
             dist = th.mean(dist, dim=1, keepdim=True)
-            print("This is  the dist calculated from the mse loss: ", dist)
-            print("This is  the dist shape from the mse loss: ", dist.shape)
-            print("This is the n_steps needed for getting the int reward: ", n_steps)
-            print("This is the n_envs needed for getting the int reward: ", n_envs)
             intrinsic_rewards = dist.view(n_steps, n_envs)
 
         # update the reward module
@@ -187,13 +175,7 @@ class RND(BaseReward):
             mask = (mask < self.update_proportion).type(th.FloatTensor).to(self.device)
             # get the masked loss
             # Before the line causing the error, add these print statements to check tensor shapes
-            print("Shapes before multiplication - Loss shape:", loss.shape, "Mask shape:", mask.shape)
-            print("This is the loss b4 the error function: ", loss)
-            print("This is the mask b4 the error function: ", mask)
             # Verify the specific dimension causing the issue
-            print("Loss shape at dim 0:", loss.shape[0])
-            print("Loss shape at dim 1:", loss.shape[1])
-            print("Mask shape at dim 0:", mask.shape[0])
             loss = (loss * mask).sum() / th.max(
                 mask.sum(), th.tensor([1], device=self.device, dtype=th.float32)
             )
