@@ -67,7 +67,6 @@ class ObservationEncoder(nn.Module):
 
         # visual
         if encoder_model == "mnih" and len(obs_shape) > 2:
-            print("We are in mnih mode!")
             self.trunk = nn.Sequential(
                 init_(nn.Conv2d(obs_shape[0], 32, 8, stride=4)),
                 nn.ReLU(),
@@ -104,7 +103,6 @@ class ObservationEncoder(nn.Module):
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
         elif encoder_model == "custom":
-            print("We are in custom mode!")
             # Define a simple multilayer neural network
             self.trunk = nn.Sequential(
                 init_(nn.Linear(obs_shape[1], 2048)), 
@@ -134,11 +132,6 @@ class ObservationEncoder(nn.Module):
             Encoding tensors.
         """
         # normalization for intrinsic rewards is dealt with in the base intrinsic reward class
-        print("This is the obs shape in the trunk function: ", obs.shape)
-        print("This is the obs shape [0] in the trunk function: ", obs.shape[0])
-        print("This is the obs shape [1] in the trunk function: ", obs.shape[1])
-        print("This is the obs shape [2] in the trunk function: ", obs.shape[2])
-        print("This is the obs in the trunck function: ", obs)
         return self.trunk(obs)
     
 class InverseDynamicsEncoder(nn.Module):
