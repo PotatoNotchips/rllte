@@ -24,7 +24,7 @@
 
 
 from typing import Dict, Optional
-
+import gc
 import numpy as np
 import torch as th
 import torch.nn.functional as F
@@ -188,3 +188,6 @@ class RND(BaseReward):
             self.metrics["loss"].append([self.global_step, np.mean(avg_loss)])
         except:
             pass
+
+        th.cuda.empty_cache()
+        gc.collect()
