@@ -133,7 +133,7 @@ class RND(BaseReward):
 
                 # Clear memory periodically
                 if i % 13 == 0:
-                    torch.cuda.empty_cache()
+                    th.cuda.empty_cache()
     
         if sync:
             self.update(samples)
