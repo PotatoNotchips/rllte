@@ -112,29 +112,34 @@ class RND(BaseReward):
             The intrinsic rewards.
         """
         super().compute(samples)
-        # get the number of steps and environments
+        
+        # Constants for batching
+        batch_size = 36
+        
         (n_steps, n_envs) = samples.get("next_observations").size()[:2]
-        # get the next observations
-        next_obs_tensor = samples.get("next_observations").to(self.device)
-        # normalize the observations
-        next_obs_tensor = self.normalize(next_obs_tensor)
-        # compute the intrinsic rewards
         intrinsic_rewards = th.zeros(size=(n_steps, n_envs)).to(self.device)
+    
         with th.no_grad():
-            # get source and target features
-            src_feats = self.predictor(next_obs_tensor.view(-1, *self.obs_shape))
-            tgt_feats = self.target(next_obs_tensor.view(-1, *self.obs_shape))
-            # compute the distance
-            dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
-            dist = th.mean(dist, dim=1, keepdim=True)
-            intrinsic_rewards = dist.view(n_steps, n_envs)
+            for i in range(0, n_steps, batch_size):
+                batch_next_obs = samples.get("next_observations")[i:i+batch_size].to(self.device)
+                batch_next_obs = self.normalize(batch_next_obs)
+                
+                src_feats = self.predictor(batch_next_obs.view(-1, *self.obs_shape))
+                tgt_feats = self.target(batch_next_obs.view(-1, *self.obs_shape))
+                
+                dist = F.mse_loss(src_feats, tgt_feats, reduction="none").mean(dim=1)
+                dist = th.mean(dist, dim=1, keepdim=True)
+                intrinsic_rewards[i:i+batch_size] = dist.view(-1, n_envs)
 
-        # update the reward module
+                # Clear memory periodically
+                if i % 13 == 0:
+                    torch.cuda.empty_cache()
+    
         if sync:
             self.update(samples)
-
-        # scale the intrinsic rewards
+    
         return self.scale(intrinsic_rewards)
+
 
     def update(self, samples: Dict[str, th.Tensor]) -> None:
         """Update the reward module if necessary.
