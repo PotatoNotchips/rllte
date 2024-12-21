@@ -102,14 +102,16 @@ class ObservationEncoder(nn.Module):
 
             self.trunk.append(init_(nn.Linear(n_flatten, latent_dim)))
             self.trunk.append(nn.ReLU())
-        elif encoder_model == "custom":
+        elif encoder_model == "custom_dict_obs":
             # Define a simple multilayer neural network
+            subspace_lengths = [len(subspace) for key, subspace in obs_shape.items()]
+            obs_shape = sum(subspace_lengths)
             self.trunk = nn.Sequential(
-                init_(nn.Linear(obs_shape[1], 2048)), 
-                nn.ReLU(),
-                init_(nn.Linear(2048, 1024)),
+                init_(nn.Linear(obs_shape, 1024)), 
                 nn.ReLU(),
                 init_(nn.Linear(1024, 512)),
+                nn.ReLU(),
+                init_(nn.Linear(512, 256)),
                 nn.ReLU()
             )
             self.trunk.append(init_(nn.Linear(512, latent_dim)))
