@@ -131,8 +131,22 @@ class ObservationEncoder(nn.Module):
         Returns:
             Encoding tensors.
         """
+        if isinstance(obs, dict):  # Check if obs is a dictionary
+            # Extract and concatenate subspace tensors under each key
+            concatenated_obs = []
+            for key, subspace in obs.items():
+                concatenated_obs.append(subspace)
+
+            concatenated_obs = th.cat(concatenated_obs, dim=-1)  # Concatenate along the last dimension
+            encoded_obs = self.trunk(concatenated_obs)
+        else:
+            encoded_obs = self.trunk(obs)
+
+        return encoded_obs
+        """
         # normalization for intrinsic rewards is dealt with in the base intrinsic reward class
         return self.trunk(obs)
+        """
     
 class InverseDynamicsEncoder(nn.Module):
     """Encoder with inverse dynamics prediction.
